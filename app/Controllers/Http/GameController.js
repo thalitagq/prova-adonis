@@ -1,8 +1,6 @@
 'use strict'
 
-/** @typedef {import('@adonisjs/framework/src/Request')} Request */
-/** @typedef {import('@adonisjs/framework/src/Response')} Response */
-/** @typedef {import('@adonisjs/framework/src/View')} View */
+const Game = use('App/Models/Game')
 
 /**
  * Resourceful controller for interacting with games
@@ -17,20 +15,12 @@ class GameController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {
+  async index () {
+    const games = await Game.all()
+
+    return games
   }
 
-  /**
-   * Render a form to be used for creating a new game.
-   * GET games/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
-  }
 
   /**
    * Create/save a new game.
@@ -40,7 +30,12 @@ class GameController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, response }) {
+  async store ({ request }) {
+    const data = request.all()
+
+    const game = await Game.create(data)
+
+    return game
   }
 
   /**
@@ -52,19 +47,10 @@ class GameController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {
-  }
+  async show ({ params }) {
+    const game = await Game.findByOrFail('id',params.id)
 
-  /**
-   * Render a form to update an existing game.
-   * GET games/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
+    return game
   }
 
   /**
@@ -75,7 +61,14 @@ class GameController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
+  async update ({ params, request }) {
+    const game = await Game.findByOrFail('id', params.id)
+    const data = request.only(['type', 'description', 'price', 'range', 'max-number','color'])
+    
+    game.merge(data)
+
+    await game.save()
+    return game
   }
 
   /**
@@ -86,8 +79,12 @@ class GameController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
+  async destroy ({ params }) {
+    const game = await Game.findByOrFail('id', params.id)
+
+    await game.delete()
   }
 }
 
+// eslint-disable-next-line no-undef
 module.exports = GameController

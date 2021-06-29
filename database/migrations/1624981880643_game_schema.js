@@ -6,7 +6,13 @@ const Schema = use('Schema')
 class GameSchema extends Schema {
   up () {
     this.create('games', (table) => {
-      table.increments()
+      table.increments().primary();
+      table.string('type').notNullable()
+      table.string('description').notNullable()
+      table.integer('range').notNullable()
+      table.float("price", 2, 2).notNullable();
+      table.integer("max-number").notNullable();
+      table.string("color").notNullable();
       table.timestamps()
     })
   }
@@ -16,4 +22,5 @@ class GameSchema extends Schema {
   }
 }
 
+// eslint-disable-next-line no-undef
 module.exports = GameSchema

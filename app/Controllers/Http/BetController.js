@@ -1,8 +1,6 @@
 'use strict'
 
-/** @typedef {import('@adonisjs/framework/src/Request')} Request */
-/** @typedef {import('@adonisjs/framework/src/Response')} Response */
-/** @typedef {import('@adonisjs/framework/src/View')} View */
+const Bet = use('App/Models/Bet')
 
 /**
  * Resourceful controller for interacting with bets
@@ -17,20 +15,12 @@ class BetController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {
+  async index () {
+    const bets = await Bet.query().with('user').fetch()
+
+    return bets
   }
 
-  /**
-   * Render a form to be used for creating a new bet.
-   * GET bets/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
-  }
 
   /**
    * Create/save a new bet.
@@ -40,7 +30,12 @@ class BetController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, response }) {
+  async store ({ request, auth }) {
+    const data = request.all()
+
+    const bet = await Bet.create({...data, user_id: auth.user.id})
+
+    return bet
   }
 
   /**
@@ -52,19 +47,11 @@ class BetController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {
-  }
+  async show ({ params }) {
 
-  /**
-   * Render a form to update an existing bet.
-   * GET bets/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
+    const bet = await Bet.findByOrFail('id', params.id)
+
+    return bet
   }
 
   /**
@@ -75,19 +62,31 @@ class BetController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
+  async update ({ params, request }) {
+    const bet = await Bet.findByOrFail('id', params.id)
+    const data = request.all()
+
+    bet.merge(data)
+
+    await bet.save()
+
+    return bet
   }
 
   /**
    * Delete a bet with id.
-   * DELETE bets/:id
+   * DELETE bets/:id   
    *
    * @param {object} ctx
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
+  async destroy ({ params }) {
+    const bet = await Bet.findByOrFail('id', params.id)
+
+    await bet.delete()
   }
 }
 
+// eslint-disable-next-line no-undef
 module.exports = BetController

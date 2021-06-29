@@ -4,6 +4,15 @@
 const Model = use('Model')
 
 class Bet extends Model {
+  user(){
+    return this.belongsTo('App/Models/User')
+  }
+
+  games(){
+    return this.hasMany('App/Models/Game')
+  }
+
 }
 
+// eslint-disable-next-line no-undef
 module.exports = Bet

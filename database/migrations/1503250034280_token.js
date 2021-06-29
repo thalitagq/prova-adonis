@@ -20,4 +20,5 @@ class TokensSchema extends Schema {
   }
 }
 
+// eslint-disable-next-line no-undef
 module.exports = TokensSchema
