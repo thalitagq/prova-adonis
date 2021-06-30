@@ -52,4 +52,5 @@ class ExceptionHandler extends BaseExceptionHandler {
   }
 }
 
+// eslint-disable-next-line no-undef
 module.exports = ExceptionHandler

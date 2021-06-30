@@ -6,7 +6,7 @@ const Schema = use("Schema");
 class BetSchema extends Schema {
   up() {
     this.create("bets", (table) => {
-      table.increments().primary();
+      table.increments().primary()
       table
         .integer("user_id")
         .unsigned()

@@ -1,6 +1,7 @@
 'use strict'
 
 const Bet = use('App/Models/Bet')
+const Game = use('App/Models/Game')
 
 /**
  * Resourceful controller for interacting with bets
@@ -15,12 +16,16 @@ class BetController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index () {
-    const bets = await Bet.query().with('user').fetch()
+  async index ({ request }) {
 
+    const { page } = request.get()
+
+    const bets = await Bet.query()
+      .with('user')
+      .paginate(page)
+      //fetch()
     return bets
   }
-
 
   /**
    * Create/save a new bet.
@@ -30,12 +35,39 @@ class BetController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, auth }) {
-    const data = request.all()
+  async store ({ request, response, auth }) {
+    const data = request.only(['bets'])
+    const total = await this.totalPrice(data.bets);
+    if (total < data.bets[0]['total_price']) {
+      return response.status(401).send({
+        error: {
+          message:
+            "The minimum value for bet is: " +
+            data.bets[0]["total_price"] +
+            ". Current value: " +
+            total
+        },
+      });
+    }
 
-    const bet = await Bet.create({...data, user_id: auth.user.id})
+    let betsSaved = []
+    for (const bet of data.bets) {
+      await Bet.create({ ...bet, user_id: auth.user.id });
+      betsSaved.push({ ...bet, user_id: auth.user.id });
+    }
+    
+    return betsSaved
+  }
 
-    return bet
+  async totalPrice(bets){
+    let total = 0
+
+    for (const bet of bets) {
+      let game = await Game.findByOrFail("id", bet.game_id);
+      total += game.price
+      console.log('TOTAL: ', total);
+    }
+    return total
   }
 
   /**
