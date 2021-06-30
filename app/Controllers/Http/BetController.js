@@ -2,7 +2,7 @@
 
 const Bet = use('App/Models/Bet')
 const Game = use('App/Models/Game')
-
+const Mail = use('Mail')
 /**
  * Resourceful controller for interacting with bets
  */
@@ -55,6 +55,19 @@ class BetController {
       await Bet.create({ ...bet, user_id: auth.user.id });
       betsSaved.push({ ...bet, user_id: auth.user.id });
     }
+
+    await Mail.send(
+      ["emails.new_bet"],
+      {
+        username: auth.user.username,
+      },
+      (message) => {
+        message
+          .to(auth.user.email)
+          .from("thalitagq@outlook.com", "Thalita")
+          .subject("New Bet");
+      }
+    )
     
     return betsSaved
   }
