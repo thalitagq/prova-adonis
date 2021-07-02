@@ -18,10 +18,9 @@ class ForgotPasswordController {
       user.token_created_at = new Date();
 
       await user.save()
-
       await Mail.send(
-        ['emails.forgot_password'],
-        { email, token: user.token, link: `${request.input('redirect_url')}?token=${user.token}`},
+        ['emails.email'],
+        { email, token: user.token, link: `${request.input('redirect_url')}?token=${user.token}`, forgot_password: true},
         message => {
           message
             .to(user.email)
@@ -29,6 +28,8 @@ class ForgotPasswordController {
             .subject('Password recovery')
         }
       )
+
+      return user.token
 
     } catch (error) {
       return response

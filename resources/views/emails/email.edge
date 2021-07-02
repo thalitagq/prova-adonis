@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <style>
+    * { margin: 0; padding: 0; font-family: 'Helvetica Neue', sans-serif}
+    .title{ 
+      color: #707070;
+      font-size: 44px;
+      display: flex;
+      flex-direction: column;
+      font-style: italic;
+      line-height: 55px;
+      margin-bottom: -15px;
+    }
+    .title::after{
+      content: "";
+      height: 7px;
+      background: #b5c401;
+      border-radius: 6px;
+      width: 85px;
+     }
+    .header {   
+      height: 50px;
+      border-bottom: 2px solid #ebebeb;
+      display: flex;
+      align-items: center;
+      padding: 10px;
+    }
+    main { height: 100vh; background: #f7f7f7; flex: 1 }
+    .footer {   
+      height: 80px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-top: 2px solid #ebebeb;
+      bottom: 0;
+    }
+    .footer p{
+      font-size: 15px;
+      color: #707070;
+    }
+    .layout{
+      height: 100%;
+      display: flex;
+      font-weight: 300;
+      color: #707070;
+      padding: 20px;
+    }
+    a{
+      color: #b5c401;
+      text-decoration: none;
+      margin-top: 10px 
+    }
+    .message-title{
+      margin-bottom: 20px
+    }
+  </style>
+</head>
+<body>
+  @include('./partials/header')
+
+  <section class="layout">
+
+    <main>
+      @if(forgot_password)
+        @include('./emails/forgot_password')
+      @endif
+    
+    </main>
+  </section>
+
+  @include('./partials/footer')
+</body>
+</html>
