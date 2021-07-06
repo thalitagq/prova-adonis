@@ -21,7 +21,7 @@ class BetController {
     const { page } = request.get()
 
     const bets = await Bet.query()
-      .with('user')
+      // .with('user')
       .paginate(page)
       //fetch()
     return bets
@@ -57,9 +57,10 @@ class BetController {
     }
 
     await Mail.send(
-      ["emails.new_bet"],
+      ["emails.email"],
       {
         username: auth.user.username,
+        new_bet: true
       },
       (message) => {
         message
@@ -94,7 +95,7 @@ class BetController {
    */
   async show ({ params }) {
 
-    const bet = await Bet.findByOrFail('id', params.id)
+    const bet = await Bet.query().where('user_id', params.id).fetch()
 
     return bet
   }

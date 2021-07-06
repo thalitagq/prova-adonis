@@ -21,7 +21,6 @@ class GameController {
     return games
   }
 
-
   /**
    * Create/save a new game.
    * POST games

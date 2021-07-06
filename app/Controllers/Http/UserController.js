@@ -10,9 +10,10 @@ class UserController {
       const user = await User.create(data);
 
       await Mail.send(
-        ["emails.new_account"],
+        ["emails.email"],
         {
           username: user.username,
+          new_account: true
         },
         (message) => {
           message

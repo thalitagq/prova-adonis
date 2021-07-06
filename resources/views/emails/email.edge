@@ -46,7 +46,7 @@
       height: 100%;
       display: flex;
       font-weight: 300;
-      color: #707070;
+      /* color: #707070; */
       padding: 20px;
     }
     a{
@@ -67,6 +67,12 @@
     <main>
       @if(forgot_password)
         @include('./emails/forgot_password')
+      @endif
+      @if(new_bet)
+        @include('./emails/new_bet')
+      @endif
+      @if(new_account)
+        @include('./emails/new_account')
       @endif
     
     </main>
